@@ -1,15 +1,15 @@
 import express from 'express';
 import healthRoutes from './routes/healthRoutes.js';
+import applicationRoutes from './routes/applicationRoutes.js';
 
 // Express creates the HTTP API; feature routes can be added here later.
 const app = express();
 app.use(express.json());
 
+
 // A safe test endpoint that confirms the API is running.
 app.use('/api/health', healthRoutes);
-
-// Teammates will add routes, controllers, services, and database access
-// for applications after agreeing on their request/response formats.
+app.use('/api/applications', applicationRoutes);
 
 // Standard JSON response for errors not handled by a specific route.
 app.use((error, _request, response, _next) => {
