@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Dashboard from "./components/Dashboard";
 import AddApplication from "./components/AddApplication";
@@ -31,6 +32,7 @@ function App() {
           jobUrl: app.job_url,
           notes: app.notes,
         }));
+
         setApplications(formattedData);
         setLoading(false);
       })
@@ -72,9 +74,10 @@ function App() {
       };
 
       setApplications((prev) => [formattedApp, ...prev]);
+
     } catch (err) {
       console.error("Failed to add application:", err);
-      alert(`Error: ${err.message}`);
+      throw err;
     }
   }
 
