@@ -46,17 +46,22 @@ export default function FilterApplicationsFollowUp({ applications }) {
           className="search-input"
         />
 
+        
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="status-dropdown"
         >
           <option value="All">All Statuses</option>
+          <option value="Saved">Saved</option>
           <option value="Applied">Applied</option>
-          <option value="Reviewing Application">Reviewing</option>
-          <option value="Interview/Assessment">Interview or Assessment</option>
+          <option value="Under Review">Under Review</option>
+          <option value="Interview">Interview</option>
+          <option value="Assessment">Assessment</option>
+          <option value="Offer">Offer</option>
           <option value="Rejected">Rejected</option>
         </select>
+
 
         <button
           onClick={() => setShowOnlyUpcoming(!showOnlyUpcoming)}
