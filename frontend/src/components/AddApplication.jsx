@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import './AddApplication.css';
 
@@ -21,25 +22,25 @@ function AddApplication({ onAddApplication }) {
     });
   }
 
-  function saveApplication(event) {
+  async function saveApplication(event) {
     event.preventDefault();
+    setMessage('');
 
-    const newApplication = {
-      id: Date.now(),
-      ...applicationData,
-    };
+    try {
+      await onAddApplication(applicationData);
 
-    onAddApplication(newApplication);
+      setMessage('Application saved successfully!');
 
-    setMessage('Application is saved successfully!');
-
-    setapplicationData({
-      company: '',
-      position: '',
-      applicationDate: '',
-      status: '',
-      notes: '',
-    });
+      setapplicationData({
+        company: '',
+        position: '',
+        applicationDate: '',
+        status: '',
+        notes: '',
+      });
+    } catch (error) {
+      setMessage('Could not save application: ' + error.message);
+    }
   }
 
   return (
@@ -95,27 +96,26 @@ function AddApplication({ onAddApplication }) {
 
             <div className="form-group">
               <label htmlFor="status">Current Status</label>
-                <select
+              <select
                 id="status"
                 name="status"
                 value={applicationData.status}
                 onChange={updateField}
                 required
-                >
+              >
                 <option value="" disabled>
-                 Select a status
+                  Select a status
                 </option>
-                 <option value="Saved">Saved</option>
+                <option value="Saved">Saved</option>
                 <option value="Applied">Applied</option>
                 <option value="Under Review">Under Review</option>
                 <option value="Interview">Interview</option>
                 <option value="Assessment">Assessment</option>
                 <option value="Offer">Offer</option>
                 <option value="Rejected">Rejected</option>
-                </select>
+              </select>
             </div>
           </div>
-
 
           <div className="form-group">
             <label htmlFor="notes">Notes</label>
