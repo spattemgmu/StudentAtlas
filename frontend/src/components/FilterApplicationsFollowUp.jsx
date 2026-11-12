@@ -15,11 +15,16 @@ export default function FilterApplicationsFollowUp({ applications }) {
 
     const matchesStatus = statusFilter === "All" || app.status === statusFilter;
 
+    
     let matchesFollowUp = true;
-    if (showOnlyUpcoming && app.followUpDate) {
+    
+    if (showOnlyUpcoming) {
       const today = new Date().toISOString().split("T")[0];
-      matchesFollowUp = app.followUpDate >= today;
+    
+      matchesFollowUp =
+        Boolean(app.followUpDate) && app.followUpDate >= today;
     }
+
 
     return matchesSearch && matchesStatus && matchesFollowUp;
   });
