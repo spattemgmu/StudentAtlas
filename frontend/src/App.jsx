@@ -114,7 +114,7 @@ function App() {
 
   return (
     <>
-      <Dashboard />
+      <Dashboard applications={applications} />
 
       <AddApplication onAddApplication={addApplication} />
       <h2>Application Tracker</h2>
