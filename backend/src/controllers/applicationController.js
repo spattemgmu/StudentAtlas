@@ -1,7 +1,19 @@
 import {
   saveApplication,
   changeApplicationStatus,
+  getAllApplications,
 } from "../services/applicationService.js";
+
+export function getAllApplicationsHandler(_request, response) {
+  try {
+    const applications = getAllApplications();
+    response.status(200).json(applications);
+  } catch (error) {
+    response.status(500).json({
+      error: error.message,
+    });
+  }
+}
 
 export function createApplicationHandler(request, response) {
   try {

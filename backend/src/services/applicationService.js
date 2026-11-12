@@ -1,5 +1,6 @@
 import {
   addApplication,
+  getAllApplications as getAllApplicationsFromRepository,
   getApplicationById,
   updateApplicationStatus as updateStatusInRepository,
 } from "../repositories/applicationRepository.js";
@@ -95,6 +96,11 @@ export function updateApplicationStatus(application, newStatus) {
   };
 }
 
+
+export function getAllApplications() {
+  return getAllApplicationsFromRepository();
+}
+
 export function saveApplication(applicationData) {
   const application = createApplication(applicationData);
 
@@ -116,7 +122,7 @@ export function saveApplication(applicationData) {
 
 export function changeApplicationStatus(id, newStatus) {
   
-    validateApplicationStatus(newStatus);
+  validateApplicationStatus(newStatus);
 
   const application = getApplicationById(id);
 
@@ -126,7 +132,6 @@ export function changeApplicationStatus(id, newStatus) {
 
   const updated = updateStatusInRepository(id, newStatus);
 
-  
   if (!updated) {
     throw new Error("Application status could not be updated.");
   }

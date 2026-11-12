@@ -1,51 +1,22 @@
 import React, { useState } from "react";
 import "./FilterApplicationsFollowUp.css";
 
-export default function FilterApplicationsFollowUp() {
-  const [applications, setApplications] = useState([
-    {
-      id: 1,
-      company: "Google",
-      role: "Software Engineer Intern",
-      status: "Interview/Assessment",
-      followUpDate: "2026-11-10",
-    },
-    {
-      id: 2,
-      company: "Stripe",
-      role: "Frontend Developer Intern",
-      status: "Applied",
-      followUpDate: "2026-11-05",
-    },
-    {
-      id: 3,
-      company: "Amazon",
-      role: "SDE Intern",
-      status: "Reviewing Application",
-      followUpDate: "2026-11-15",
-    },
-    {
-      id: 4,
-      company: "Spotify",
-      role: "Junior Web Dev",
-      status: "Rejected",
-      followUpDate: "2026-10-20",
-    },
-  ]);
-
+export default function FilterApplicationsFollowUp({ applications }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showOnlyUpcoming, setShowOnlyUpcoming] = useState(false);
 
   const filteredApplications = applications.filter((app) => {
+    const roleOrPosition = app.role || app.position || "";
     const matchesSearch =
-      app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.role.toLowerCase().includes(searchTerm.toLowerCase());
+      (app.company &&
+        app.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      roleOrPosition.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === "All" || app.status === statusFilter;
 
     let matchesFollowUp = true;
-    if (showOnlyUpcoming) {
+    if (showOnlyUpcoming && app.followUpDate) {
       const today = new Date().toISOString().split("T")[0];
       matchesFollowUp = app.followUpDate >= today;
     }
@@ -101,7 +72,7 @@ export default function FilterApplicationsFollowUp() {
           filteredApplications.map((app) => (
             <div key={app.id} className="app-card">
               <h3>{app.company}</h3>
-              <p>Role: {app.role}</p>
+              <p>Role: {app.role || app.position}</p>
               <div className="app-details">
                 <span className="status-badge">Status: {app.status}</span>
                 <span className="followup-date">
