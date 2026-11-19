@@ -7,6 +7,7 @@ import applicationRoutes from "./routes/applicationRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { requireLogin } from "./middleware/requireLogin.js";
+import documentRoutes from "./routes/documentRoutes.js";
 
 // Create the Express application.
 const app = express();
@@ -51,6 +52,8 @@ app.use("/api/applications", requireLogin, applicationRoutes);
 
 // Require login before accessing profile information.
 app.use("/api/profile", requireLogin, profileRoutes);
+
+app.use("/api/documents", requireLogin, documentRoutes);
 
 // Handle registration, login, and logout.
 app.use("/api/auth", authRoutes);

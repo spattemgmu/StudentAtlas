@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Dashboard from "./components/Dashboard";
 import AddApplication from "./components/AddApplication";
@@ -36,6 +35,11 @@ function App() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Store Document Hub information.
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documentMessage, setDocumentMessage] = useState("");
 
   // Check for an existing login session when the website opens.
   useEffect(() => {
@@ -107,6 +111,141 @@ function App() {
         setLoading(false);
       });
   }, [currentUser]);
+
+  // Load documents when the Documents page opens.
+  useEffect(() => {
+    if (page === "Documents" && currentUser) {
+      loadDocuments();
+    }
+  }, [page, currentUser]);
+
+  // Load documents belonging to the logged-in user.
+  async function loadDocuments() {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/documents",
+        {
+          credentials: "include"
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load documents.");
+      }
+
+      const data = await response.json();
+      setDocuments(data);
+    } catch (error) {
+      console.error("Failed to load documents:", error);
+      setDocumentMessage("Could not load documents.");
+    }
+  }
+
+  // Upload a document.
+  async function uploadDocument() {
+    if (!selectedDocument) {
+      setDocumentMessage("Please select a document.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("document", selectedDocument);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/documents/upload",
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Upload failed."
+        );
+      }
+
+      setDocumentMessage("Document uploaded successfully.");
+      setSelectedDocument(null);
+
+      await loadDocuments();
+    } catch (error) {
+      console.error("Upload error:", error);
+      setDocumentMessage(error.message);
+    }
+  }
+
+  // Download a document.
+  async function downloadDocument(document) {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/documents/${document.id}/download`,
+        {
+          credentials: "include"
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Download failed.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = document.original_name;
+
+      window.document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      setDocumentMessage(error.message);
+    }
+  }
+
+  // Delete a document.
+  async function deleteDocumentFromHub(id) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this document?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/documents/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include"
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Delete failed."
+        );
+      }
+
+      setDocumentMessage("Document deleted successfully.");
+
+      await loadDocuments();
+    } catch (error) {
+      console.error("Delete error:", error);
+      setDocumentMessage(error.message);
+    }
+  }
 
   // Add a new job application.
   async function addApplication(newApplicationData) {
@@ -225,6 +364,7 @@ function App() {
       // Clear user information after successful logout.
       setCurrentUser(null);
       setApplications([]);
+      setDocuments([]);
       setPage("Dashboard");
       setProfileMenuOpen(false);
 
@@ -384,10 +524,55 @@ function App() {
 
           {page === "Documents" && (
             <section className="placeholder-panel">
-              <h1>Documents</h1>
-              <p>
-                Resume and document management is planned.
+              <h1>Document Hub</h1>
+
+              <p className="page-description">
+                Upload, download, and manage your resumes, cover letters,
+                and other documents.
               </p>
+
+              <div>
+                <input
+                  type="file"
+                  onChange={(event) =>
+                    setSelectedDocument(event.target.files[0] || null)
+                  }
+                />
+
+                <button onClick={uploadDocument}>
+                  Upload Document
+                </button>
+              </div>
+
+              {documentMessage && (
+                <p>{documentMessage}</p>
+              )}
+
+              <div>
+                {documents.length === 0 ? (
+                  <p>No documents uploaded yet.</p>
+                ) : (
+                  documents.map((document) => (
+                    <div key={document.id}>
+                      <span>{document.original_name}</span>
+
+                      <button
+                        onClick={() => downloadDocument(document)}
+                      >
+                        Download
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          deleteDocumentFromHub(document.id)
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
             </section>
           )}
 
