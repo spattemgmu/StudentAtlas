@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import ApplicationStatus from "./ApplicationStatus";
 import "./FilterApplicationsFollowUp.css";
