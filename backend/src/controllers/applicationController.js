@@ -2,6 +2,7 @@ import {
   saveApplication,
   changeApplicationStatus,
   getAllApplications,
+  removeApplication,
 } from "../services/applicationService.js";
 
 // Get applications belonging to the logged-in student.
@@ -61,6 +62,41 @@ export function updateApplicationStatusHandler(request, response) {
 
     response.status(400).json({
       error: error.message,
+    });
+  }
+}
+
+// Delete an application only if the logged-in student owns it.
+export function deleteApplicationHandler(request, response) {
+  try {
+    // Convert the application ID from the URL into a number.
+    const id = Number(request.params.id);
+
+    // Delete the application using the logged-in student's ID.
+    const result = removeApplication(id, request.userId);
+
+    // Return a confirmation message.
+    return response.status(200).json(result);
+
+  } catch (error) {
+    // Return 404 if the application does not exist
+    // or does not belong to the logged-in student.
+    if (error.message === "Application not found.") {
+      return response.status(404).json({
+        error: error.message,
+      });
+    }
+
+    // Return 400 if the application ID is invalid.
+    if (error.message === "Invalid application ID.") {
+      return response.status(400).json({
+        error: error.message,
+      });
+    }
+
+    // Return 500 if an unexpected error occurs.
+    return response.status(500).json({
+      error: "Application could not be deleted.",
     });
   }
 }
