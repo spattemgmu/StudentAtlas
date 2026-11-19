@@ -4,6 +4,7 @@ import {
   getAllApplications as getAllApplicationsFromRepository,
   getApplicationById,
   updateApplicationStatus as updateStatusInRepository,
+  deleteApplication as deleteApplicationFromRepository,
 } from "../repositories/applicationRepository.js";
 
 // All allowed application statuses.
