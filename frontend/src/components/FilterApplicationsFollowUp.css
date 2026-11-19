@@ -13,3 +13,30 @@
 .app-card p { color: #59655b; margin: 0 0 12px; }
 .app-details { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .followup-date { color: #59655b; font-size: 13px; }
+
+
+/* Delete Application button */
+.delete-application-btn {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 9px 14px;
+  background-color: #ffffff;
+  color: #b42318;
+  border: 1px solid #d92d20;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Highlight the button when hovered. */
+.delete-application-btn:hover {
+  background-color: #fef3f2;
+}
+
+/* Make keyboard focus visible. */
+.delete-application-btn:focus-visible {
+  outline: 2px solid #b42318;
+  outline-offset: 3px;
+}
