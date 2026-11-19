@@ -233,3 +233,30 @@ export function changeApplicationStatus(id, newStatus, userId) {
   // Return the updated application.
   return getApplicationById(id, userId);
 }
+
+// Delete an application belonging to the logged-in student.
+export function removeApplication(id, userId) {
+  // Make sure the application ID is a valid positive integer.
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    throw new Error("Invalid application ID.");
+  }
+
+  // Find the application and verify that this student owns it.
+  const application = getApplicationById(id, userId);
+
+  if (!application) {
+    throw new Error("Application not found.");
+  }
+
+  // Delete the application from the SQLite database.
+  const deleted = deleteApplicationFromRepository(id, userId);
+
+  if (!deleted) {
+    throw new Error("Application could not be deleted.");
+  }
+
+  // Return a message confirming successful deletion.
+  return {
+    message: "Application deleted successfully."
+  };
+}
