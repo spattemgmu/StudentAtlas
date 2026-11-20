@@ -33,7 +33,7 @@ const handleSubmit = async (event) => {
   try {
     // Send the form information to the backend.
     const response = await fetch(
-      `http://localhost:3001/api/auth/${endpoint}`,
+      `/api/auth/${endpoint}`,
       {
         method: "POST",
         headers: {

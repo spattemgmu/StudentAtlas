@@ -47,7 +47,7 @@ function App() {
     async function checkLogin() {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/auth/me",
+          "/api/auth/me",
           {
             credentials: "include"
           }
@@ -124,7 +124,7 @@ function App() {
   async function loadDocuments() {
     try {
       const response = await fetch(
-        "http://localhost:3001/api/documents",
+        "/api/documents",
         {
           credentials: "include"
         }
@@ -154,7 +154,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/documents/upload",
+        "/api/documents/upload",
         {
           method: "POST",
           credentials: "include",
@@ -184,7 +184,7 @@ function App() {
   async function downloadDocument(document) {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/documents/${document.id}/download`,
+        `/api/documents/${document.id}/download`,
         {
           credentials: "include"
         }
@@ -224,7 +224,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/documents/${id}`,
+        `/api/documents/${id}`,
         {
           method: "DELETE",
           credentials: "include"
@@ -383,7 +383,7 @@ function App() {
     try {
       // Ask the backend to end the user's session.
       const response = await fetch(
-        "http://localhost:3001/api/auth/logout",
+        "/api/auth/logout",
         {
           method: "POST",
           credentials: "include"
